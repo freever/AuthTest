@@ -51,6 +51,9 @@ builder.Services.AddOpenIddict()
             .UseAspNetCore()
             .EnableTokenEndpointPassthrough();
 
+        options
+            .DisableAccessTokenEncryption();
+
     });
 
 //add a test client
