@@ -1,3 +1,4 @@
+﻿using AuthServer.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -16,12 +17,45 @@ builder.Services.
 builder.Services
     .AddDbContext<DbContext>(options =>
     {
-    // Configure the context to use an in-memory store.
-    options.UseInMemoryDatabase(nameof(DbContext));
-
-    // Register the entity sets needed by OpenIddict.
-    options.UseOpenIddict();
+        options.UseInMemoryDatabase(nameof(DbContext));
+        options.UseOpenIddict();
 });
+
+builder.Services.AddOpenIddict()
+    .AddCore(options =>
+    {
+        options.UseEntityFrameworkCore()
+        .UseDbContext<DbContext>();
+    })
+    .AddServer(options =>
+    {
+        options
+
+        //choose applicable OIDC flows (grant types)
+        .AllowClientCredentialsFlow()
+
+        //Endpoints
+        .SetTokenEndpointUris("/connect/token");
+
+        // Encryption and signing of tokens
+        options
+            .AddEphemeralEncryptionKey()
+            .AddEphemeralSigningKey();
+
+        // Register scopes (permissions) - in addition to openid scope which is there already
+        options.RegisterScopes("api");
+
+
+        // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+        options
+            .UseAspNetCore()
+            .EnableTokenEndpointPassthrough();
+
+    });
+
+//add a test client
+builder.Services.
+   AddHostedService<TestDataService>();
 
 var app = builder.Build();
 

@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace AuthServer.Controllers
 {
-    public class AuthController : Controller
+    public class AuthenticationController : Controller
     {
 
         /// <summary>
