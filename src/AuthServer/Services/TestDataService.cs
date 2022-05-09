@@ -21,6 +21,16 @@ namespace AuthServer.Services
             var context = scope.ServiceProvider.GetRequiredService<OidcDbContext>();
             await context.Database.EnsureCreatedAsync(cancellationToken);
 
+            var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+            if (await scopeManager.FindByNameAsync("api") is null)
+            {
+                await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
+                {
+                    Name = "api",
+                    DisplayName = "Access to the API"
+                });
+            }
+
             var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
             if (await manager.FindByClientIdAsync("postman", cancellationToken) is null)
@@ -41,7 +51,9 @@ namespace AuthServer.Services
                         OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
                         OpenIddictConstants.Permissions.GrantTypes.Password,
 
-                        OpenIddictConstants.Permissions.Prefixes.Scope + "api",
+                        "api",
+
+                        //OpenIddictConstants.Permissions.Prefixes.Scope + "api",
                         
                         OpenIddictConstants.Permissions.ResponseTypes.Code
                     }
