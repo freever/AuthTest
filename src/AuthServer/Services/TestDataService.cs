@@ -1,4 +1,5 @@
 ﻿using System;
+using AuthServer.Database;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 
@@ -17,7 +18,7 @@ namespace AuthServer.Services
         {
             using var scope = _serviceProvider.CreateScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<DbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<OidcDbContext>();
             await context.Database.EnsureCreatedAsync(cancellationToken);
 
             var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();

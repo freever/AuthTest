@@ -1,4 +1,5 @@
-﻿using AuthServer.Services;
+﻿using AuthServer.Database;
+using AuthServer.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,9 +19,10 @@ builder.Services.
     });
 
 builder.Services
-    .AddDbContext<DbContext>(options =>
+    .AddDbContext<OidcDbContext>(options =>
     {
-        options.UseInMemoryDatabase(nameof(DbContext));
+        options.UseNpgsql("Server=dumbo.db.elephantsql.com;Port=5432;Database=icqxqtrb;User Id=icqxqtrb;Password=5OOJosOEFk-eYaN7wctmo-m3ywZkbozo;");
+        //options.UseInMemoryDatabase(nameof(DbContext));
         options.UseOpenIddict();
 });
 
@@ -28,7 +30,7 @@ builder.Services.AddOpenIddict()
     .AddCore(options =>
     {
         options.UseEntityFrameworkCore()
-        .UseDbContext<DbContext>();
+            .UseDbContext<OidcDbContext>();
     })
     .AddServer(options =>
     {
