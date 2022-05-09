@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
+
+//SEE https://dev.to/robinvanderknaap/setting-up-an-authorization-server-with-openiddict-part-i-introduction-4jid
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
@@ -34,6 +37,7 @@ builder.Services.AddOpenIddict()
         //client credentials flow
         .AllowClientCredentialsFlow()
         .AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange()
+        .AllowRefreshTokenFlow()
 
         //Endpoints
         // for auth code flow - returns the authorization code once the user authorizes the application - this is exchanged for access token from token endpoint

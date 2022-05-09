@@ -97,6 +97,12 @@ namespace AuthServer.Controllers
                 //OpenIddict will return an access token to the user
                 claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
             }
+            
+            else if (request.IsRefreshTokenGrantType())
+            {
+                // Retrieve the claims principal stored in the refresh token.
+                claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
+            }
 
             else
             {
