@@ -1,0 +1,19 @@
+﻿@page
+@model AuthServer.BlazorServer.Pages.LoginModel
+@{
+}
+
+<h1>Login</h1>
+<form method="Post">
+    <p>
+        <label asp-for="Email">Email Address</label>
+        <br/><input asp-for="Email"/>
+    </p>
+    <p>
+        <label asp-for="Password">Password</label>
+        <br/><input asp-for="Password"/>
+    </p>
+    <p>
+        <button type="submit">Log In</button>
+    </p>
+</form>
