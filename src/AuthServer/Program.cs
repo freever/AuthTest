@@ -38,6 +38,7 @@ builder.Services.AddOpenIddict()
         .AllowClientCredentialsFlow()
         .AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange()
         .AllowRefreshTokenFlow()
+        .AllowPasswordFlow()
 
         //Endpoints
         // for auth code flow - returns the authorization code once the user authorizes the application - this is exchanged for access token from token endpoint

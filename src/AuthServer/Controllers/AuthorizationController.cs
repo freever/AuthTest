@@ -70,7 +70,29 @@ namespace AuthServer.Controllers
 
             ClaimsPrincipal claimsPrincipal;
 
-            if (request.IsClientCredentialsGrantType())
+            if (request.IsPasswordGrantType())
+            {
+                if (request.Username != "1" || request.Password != "2")
+                {
+                    return Forbid(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                }
+
+                var identity = new ClaimsIdentity(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+
+                // Subject (sub) is a required field, we use the client id as the subject identifier here.
+                identity.AddClaim(OpenIddictConstants.Claims.Subject, request.ClientId ?? throw new InvalidOperationException());
+
+                // Add some claim, don't forget to add destination otherwise it won't be added to the access token.
+                identity.AddClaim("some-claim", "some-value", OpenIddictConstants.Destinations.AccessToken);
+
+                claimsPrincipal = new ClaimsPrincipal(identity);
+
+                //if a consent screen is implemented it would allow the user to choose which scopes the application can access
+                var scopes = request.GetScopes();
+                claimsPrincipal.SetScopes(scopes);
+            }
+
+            else if (request.IsClientCredentialsGrantType())
             {
                 // Note: the client credentials are automatically validated by OpenIddict:
                 // if client_id or client_secret are invalid, this action won't be invoked.
