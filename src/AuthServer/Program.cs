@@ -11,7 +11,7 @@ builder.Services.
     AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
-        options.LoginPath = "/auth/login";
+        options.LoginPath = "/authentication/login";
     });
 
 builder.Services
@@ -31,11 +31,18 @@ builder.Services.AddOpenIddict()
     {
         options
 
-        //choose applicable OIDC flows (grant types)
+        //client credentials flow
         .AllowClientCredentialsFlow()
+        .AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange()
 
         //Endpoints
-        .SetTokenEndpointUris("/connect/token");
+        // for auth code flow - returns the authorization code once the user authorizes the application - this is exchanged for access token from token endpoint
+        .SetAuthorizationEndpointUris("/connect/authorize")          
+        // used to issue tokens for all flows
+        .SetTokenEndpointUris("/connect/token")
+        // used to retrieve extra info about user other than what is in the id or access tokens
+        .SetUserinfoEndpointUris("/connect/userinfo");                     
+         
 
         // Encryption and signing of tokens
         options
@@ -49,7 +56,9 @@ builder.Services.AddOpenIddict()
         // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
         options
             .UseAspNetCore()
-            .EnableTokenEndpointPassthrough();
+            .EnableTokenEndpointPassthrough()
+            .EnableAuthorizationEndpointPassthrough()
+            .EnableUserinfoEndpointPassthrough();
 
         options
             .DisableAccessTokenEncryption();
@@ -66,6 +75,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
+app.UseAuthorization(); //used for the userinfo endpoint
 app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
 
 app.Run();

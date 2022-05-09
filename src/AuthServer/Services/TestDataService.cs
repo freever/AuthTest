@@ -29,12 +29,18 @@ namespace AuthServer.Services
                     ClientId = "postman",
                     ClientSecret = "postman-secret",
                     DisplayName = "Postman",
+                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") },
                     Permissions =
                     {
                         OpenIddictConstants.Permissions.Endpoints.Token,
-                        OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
+                        OpenIddictConstants.Permissions.Endpoints.Authorization,
 
-                        OpenIddictConstants.Permissions.Prefixes.Scope + "api"
+                        OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
+                        OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+
+                        OpenIddictConstants.Permissions.Prefixes.Scope + "api",
+                        
+                        OpenIddictConstants.Permissions.ResponseTypes.Code
                     }
                 }, cancellationToken);
             }
